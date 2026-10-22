@@ -1,6 +1,7 @@
 name: Build and Deploy
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,25 +9,32 @@ on:
     branches:
       - '*'
 
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Install the dependencies
         run: |
+          python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       - name: Build the JupyterLite site
-        run: |
-          cp README.md content
-          jupyter lite build --contents content --output-dir dist
+        run: jupyter lite build
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 
@@ -34,6 +42,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     permissions:
+      actions: read
       pages: write
       id-token: write
 
@@ -45,4 +54,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

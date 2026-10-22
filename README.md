@@ -1,37 +1,36 @@
-# JupyterLite Demo
+# Reactor Physics and Transport Theory — PoliTO
 
-[![lite-badge](https://jupyterlite.rtfd.io/en/latest/_static/badge.svg)](https://jupyterlite.github.io/demo)
+Interactive exercises for the *Reactor Physics and Transport Theory* course at Politecnico di Torino.
 
-JupyterLite deployed as a static site to GitHub Pages, for demo purposes.
+## Run in the browser
 
-## ✨ Try it in your browser ✨
+No local Python or Jupyter installation is required. Open the exercise in JupyterLab:
 
-➡️ **https://jupyterlite.github.io/demo**
+**[Launch the multigroup-collapsing notebook](https://nicoloabrate.github.io/fission_reactor_physics_and_transport_theory_PoliTO/lab/index.html?path=Ex_multigroup_collapsing.ipynb)**
 
-![github-pages](https://user-images.githubusercontent.com/591645/120649478-18258400-c47d-11eb-80e5-185e52ff2702.gif)
+The first launch can take a little longer while the browser downloads the Python runtime. Changes made by each student are stored only in that browser. To restore the published version, clear the JupyterLite site data from the browser or open the site in a private window.
 
-## Requirements
+## Deployment
 
-JupyterLite is being tested against modern web browsers:
+The site is built with [JupyterLite](https://jupyterlite.readthedocs.io/) and deployed automatically to GitHub Pages after every push to `main`.
 
-- Firefox 90+
-- Chromium 89+
+Repository settings required on GitHub:
 
-## Deploy your JupyterLite website on GitHub Pages
+1. Open **Settings → Pages** and select **GitHub Actions** as the source.
+2. Open **Actions** and enable workflows if they are disabled.
+3. Push to `main`, then wait for the **Build and Deploy** workflow to finish.
 
-Check out the guide on the JupyterLite documentation: https://jupyterlite.readthedocs.io/en/latest/quickstart/deploy.html
+The published site is available at:
 
-## Further Information and Updates
+<https://nicoloabrate.github.io/fission_reactor_physics_and_transport_theory_PoliTO/>
 
-For more info, keep an eye on the JupyterLite documentation:
+## Local preview
 
-- How-to Guides: https://jupyterlite.readthedocs.io/en/latest/howto/index.html
-- Reference: https://jupyterlite.readthedocs.io/en/latest/reference/index.html
+Create a Python environment, then run:
 
-This template provides the Pyodide kernel (`jupyterlite-pyodide-kernel`), the JavaScript kernel (`jupyterlite-javascript-kernel`), and the p5 kernel (`jupyterlite-p5-kernel`), along with other
-optional utilities and extensions to make the JupyterLite experience more enjoyable. See the
-[`requirements.txt` file](requirements.txt) for a list of all the dependencies provided.
+```bash
+python -m pip install -r requirements.txt
+jupyter lite serve
+```
 
-For a template based on the Xeus kernel, see the [`jupyterlite/xeus-python-demo` repository](https://github.com/jupyterlite/xeus-python-demo)
-
-
+The exercise directory is copied into the browser filesystem at build time. `MGC.py` deliberately keeps its JSON workflow free of server-only dependencies so it can run under the Pyodide kernel.

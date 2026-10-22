@@ -1,0 +1,8 @@
+{
+  "LiteBuildConfig": {
+    "contents": [
+      "Ex1_multigroup_collapsing"
+    ],
+    "output_dir": "dist"
+  }
+}
