@@ -32,7 +32,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       - name: Build the JupyterLite site
-        run: jupyter lite build
+        run: |
+          jupyter lite build
+          cp pages-index.html dist/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

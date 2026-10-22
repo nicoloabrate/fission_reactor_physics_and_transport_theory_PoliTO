@@ -6,7 +6,7 @@ Interactive exercises for the *Reactor Physics and Transport Theory* course at P
 
 No local Python or Jupyter installation is required. Open the exercise in JupyterLab:
 
-**[Launch the multigroup-collapsing notebook](https://nicoloabrate.github.io/fission_reactor_physics_and_transport_theory_PoliTO/lab/index.html?path=Ex_multigroup_collapsing.ipynb)**
+**[Launch the multigroup-collapsing notebook](https://nicoloabrate.github.io/fission_reactor_physics_and_transport_theory_PoliTO/2026/lab/index.html?path=Ex_multigroup_collapsing.ipynb)**
 
 The first launch can take a little longer while the browser downloads the Python runtime. Changes made by each student are stored only in that browser. To restore the published version, clear the JupyterLite site data from the browser or open the site in a private window.
 
