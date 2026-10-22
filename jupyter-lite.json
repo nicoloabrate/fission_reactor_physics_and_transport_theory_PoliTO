@@ -3,6 +3,8 @@
   "jupyter-config-data": {
     "appName": "Reactor Physics and Transport Theory — PoliTO",
     "defaultKernelName": "python",
+    "contentsStorageName": "RPTT PoliTO 2026 v2",
+    "settingsStorageName": "RPTT PoliTO 2026 v2 settings",
     "disabledExtensions": [
       "@jupyterlab/drawio-extension",
       "jupyterlab-kernel-spy",
