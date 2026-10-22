@@ -3,6 +3,9 @@
     "contents": [
       "Ex1_multigroup_collapsing"
     ],
-    "output_dir": "dist/2026"
+    "output_dir": "dist/2026-10-22",
+    "extra_ignore_contents": [
+      "/\\.DS_Store$"
+    ]
   }
 }
