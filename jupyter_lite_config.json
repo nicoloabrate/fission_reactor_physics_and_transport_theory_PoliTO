@@ -1,10 +1,5 @@
 {
   "LiteBuildConfig": {
-    "contents": [
-      "Ex_RP_multigroup_collapsing",
-      "Ex_TT_Maxwell_Boltzmann"
-    ],
-    "output_dir": "dist/2026",
     "extra_ignore_contents": [
       "/\\.DS_Store$"
     ]
