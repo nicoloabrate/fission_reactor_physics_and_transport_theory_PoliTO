@@ -1,0 +1,9 @@
+% coordinates of the various regions
+0
+30
+70
+100
+% meshes per region
+30
+40
+30

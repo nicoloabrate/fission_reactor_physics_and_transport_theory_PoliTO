@@ -1,0 +1,31 @@
+{
+  "description": "One-group fuel slab with left and right reflectors",
+  "energy_groups": 1,
+  "cross_section_units": "cm^-1",
+  "scattering_convention": "S0[destination_group][source_group]",
+  "region_materials": [
+    "reflector",
+    "fuel",
+    "reflector"
+  ],
+  "materials": {
+    "reflector": {
+      "Sigma_tot": [0.28],
+      "S0": [
+        [0.25]
+      ],
+      "nuSigma_fiss": [0.0],
+      "Sigma_fiss": [0.0],
+      "chi_tot": [1.0]
+    },
+    "fuel": {
+      "Sigma_tot": [0.5],
+      "S0": [
+        [0.4]
+      ],
+      "nuSigma_fiss": [0.25],
+      "Sigma_fiss": [0.05],
+      "chi_tot": [1.0]
+    }
+  }
+}

@@ -1,7 +1,13 @@
 {
   "LiteBuildConfig": {
     "extra_ignore_contents": [
-      "/\\.DS_Store$"
+      "/\\.DS_Store$",
+      "/matlab_codes/",
+      "/__pycache__/",
+      "/\\.pytest_cache/",
+      "\\.zip$",
+      "/test_sn_1d\\.py$",
+      "/create_case_notebooks\\.py$"
     ]
   }
 }

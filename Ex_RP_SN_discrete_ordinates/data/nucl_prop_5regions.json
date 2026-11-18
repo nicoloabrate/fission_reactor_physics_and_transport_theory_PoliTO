@@ -1,0 +1,42 @@
+{
+  "description": "Symmetric one-group slab with five spatial regions",
+  "energy_groups": 1,
+  "cross_section_units": "cm^-1",
+  "scattering_convention": "S0[destination_group][source_group]",
+  "region_materials": [
+    "reflector",
+    "outer_fuel",
+    "inner_fuel",
+    "outer_fuel",
+    "reflector"
+  ],
+  "materials": {
+    "reflector": {
+      "Sigma_tot": [1.0],
+      "S0": [
+        [0.8]
+      ],
+      "nuSigma_fiss": [0.0],
+      "Sigma_fiss": [0.0],
+      "chi_tot": [1.0]
+    },
+    "outer_fuel": {
+      "Sigma_tot": [1.0],
+      "S0": [
+        [0.6]
+      ],
+      "nuSigma_fiss": [0.5],
+      "Sigma_fiss": [0.2],
+      "chi_tot": [1.0]
+    },
+    "inner_fuel": {
+      "Sigma_tot": [1.0],
+      "S0": [
+        [0.5]
+      ],
+      "nuSigma_fiss": [0.75],
+      "Sigma_fiss": [0.3],
+      "chi_tot": [1.0]
+    }
+  }
+}

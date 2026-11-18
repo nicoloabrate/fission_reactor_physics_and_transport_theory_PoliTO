@@ -39,6 +39,9 @@ jobs:
           jupyter lite build \
             --contents Ex_TT_Maxwell_Boltzmann \
             --output-dir dist/Ex_TT_Maxwell_Boltzmann
+          jupyter lite build \
+            --contents Ex_RP_SN_discrete_ordinates \
+            --output-dir dist/Ex_RP_SN_discrete_ordinates
           cp pages-index.html dist/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
