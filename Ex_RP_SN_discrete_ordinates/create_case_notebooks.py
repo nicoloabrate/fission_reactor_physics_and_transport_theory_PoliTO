@@ -49,34 +49,24 @@ SETUP = code(r"""
 
 
 HELPERS = code(r"""
-    def plot_inner_iteration_maps(result, selected_outer_iterations=None):
-        # One dot per selected (power iteration, outer iteration) pair.
-        if selected_outer_iterations is not None:
-            selected_outer_iterations = set(selected_outer_iterations)
-            if not selected_outer_iterations or min(selected_outer_iterations) < 1:
-                raise ValueError('Select positive outer iteration numbers, or use None.')
+    def plot_inner_iteration_maps(result):
+        # One dot per (power iteration, outer iteration) pair.
         power_x, outer_y, per_outer, per_power = [], [], [], []
         for power in result.history:
             counts = [sum(inner.iterations for inner in outer.inner_iterations)
                       for outer in power.outer_iterations]
             total = sum(counts)
             for outer, count in zip(power.outer_iterations, counts):
-                if (selected_outer_iterations is not None
-                        and outer.iteration not in selected_outer_iterations):
-                    continue
                 power_x.append(power.iteration)
                 outer_y.append(outer.iteration)
                 per_outer.append(count)
                 per_power.append(total)
-        if not power_x:
-            raise ValueError('The selected outer iterations do not occur in this result.')
-
         fig, axes = plt.subplots(1, 2, figsize=(13, 4.5), sharex=True, sharey=True)
         for ax, values, title, colorbar_label in (
-            (axes[0], per_power, 'Total inner iterations in the power iteration on x',
-             'inner iterations / power step'),
-            (axes[1], per_outer, 'Inner iterations at the plotted (x, y) pair',
-             'inner iterations / outer step'),
+            (axes[0], per_power, 'Total per power iteration (same color in each column)',
+             'total inner iterations in this power iteration'),
+            (axes[1], per_outer, 'Count per outer iteration (color of each dot)',
+             'inner iterations at this (power, outer) pair'),
         ):
             dots = ax.scatter(power_x, outer_y, c=values, cmap='viridis',
                               s=75, edgecolors='black', linewidths=0.3)
@@ -164,18 +154,15 @@ ANALYSIS = [
     markdown(r"""
         ## Nested iteration counts
 
-        Each dot at `(x, y)` represents outer iteration `y` within power
-        iteration `x`. Both panels use these same coordinates. On the left,
-        the color is the total inner iteration count for power iteration `x`,
-        summed over **all** its outer iterations and all energy groups. On
-        the right, the color counts inner iterations for the **specific outer
-        iteration `y`** in power iteration `x`, summed over energy groups.
-        To focus on selected outer iterations, edit the tuple in the next cell;
-        `None` shows every completed outer iteration. For a one group case,
-        only outer iteration 1 occurs.
+        All completed iterations are plotted automatically. A dot at `(3, 2)`
+        means **outer iteration 2 of power iteration 3**. The right panel
+        colors that dot by the number of inner iterations needed for that
+        outer iteration (summed over energy groups). The left panel colors
+        every dot in column 3 by the **total** inner iterations over all
+        outer iterations of power iteration 3. For a one group case, only
+        outer iteration 1 occurs.
     """),
-    code("OUTER_ITERATIONS_TO_SHOW = None  # For example, (1, 2); None shows all.\n"
-         "plot_inner_iteration_maps(result, OUTER_ITERATIONS_TO_SHOW);"),
+    code("plot_inner_iteration_maps(result);"),
     markdown(r"""
         ## Angular and scalar flux
 
