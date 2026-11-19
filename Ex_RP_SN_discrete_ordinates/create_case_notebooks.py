@@ -24,7 +24,15 @@ SETUP = code(r"""
     from pathlib import Path
     import sys
 
-    import ipywidgets as widgets
+    try:
+        import ipywidgets as widgets
+    except ModuleNotFoundError:
+        # The Pyodide kernel does not inherit packages installed in the
+        # environment that built the JupyterLite site.
+        import piplite
+        await piplite.install('ipywidgets==8.1.7')
+        import ipywidgets as widgets
+
     import matplotlib.pyplot as plt
     import numpy as np
     from IPython.display import display

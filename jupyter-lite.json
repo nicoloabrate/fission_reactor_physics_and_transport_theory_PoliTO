@@ -3,7 +3,7 @@
   "jupyter-config-data": {
     "appName": "Reactor Physics and Transport Theory — PoliTO",
     "defaultKernelName": "python",
-    "contentsStorageName": "RPTT PoliTO 2026 v3",
+    "contentsStorageName": "RPTT PoliTO 2026 v4",
     "settingsStorageName": "RPTT PoliTO 2026 v2 settings",
     "disabledExtensions": [
       "@jupyterlab/drawio-extension",
