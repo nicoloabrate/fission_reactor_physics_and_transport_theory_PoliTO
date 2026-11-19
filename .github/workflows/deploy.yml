@@ -33,14 +33,17 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Build the JupyterLite site
         run: |
+          rm -f .jupyterlite.doit.db
           jupyter lite build \
             --lite-dir . \
             --contents Ex_RP_multigroup_collapsing \
             --output-dir dist/Ex_RP_multigroup_collapsing
+          rm -f .jupyterlite.doit.db
           jupyter lite build \
             --lite-dir . \
             --contents Ex_TT_Maxwell_Boltzmann \
             --output-dir dist/Ex_TT_Maxwell_Boltzmann
+          rm -f .jupyterlite.doit.db
           jupyter lite build \
             --lite-dir . \
             --contents Ex_RP_SN_discrete_ordinates \
