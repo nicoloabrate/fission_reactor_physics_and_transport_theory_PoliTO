@@ -345,12 +345,17 @@ class SlabSNProblem:
 
 @dataclass(frozen=True)
 class SNSettings:
-    """Numerical parameters shared by one-group and multigroup calculations."""
+    """Numerical parameters shared by one-group and multigroup calculations.
+
+    Criticality calculations stop only when both the relative eigenvalue
+    error and the relative scalar-flux L2 change satisfy their tolerances.
+    """
 
     order: int = 2
     inner_tolerance: float = 1.0e-6
     outer_tolerance: float = 1.0e-4
-    eigenvalue_tolerance: float = 1.0e-6
+    eigenvalue_tolerance: float = 1.0e-8
+    power_flux_tolerance: float = 1.0e-7
     max_inner_iterations: int = 10_000
     max_outer_iterations: int = 10_000
     max_power_iterations: int = 10_000
@@ -362,11 +367,12 @@ class SNSettings:
         if self.order <= 0 or self.order % 2:
             raise ValueError("The S_N order must be a positive even integer.")
 
-        # --- all three nested iterations need a positive stopping tolerance
+        # --- every convergence indicator needs a positive stopping tolerance
         tolerances = (
             self.inner_tolerance,
             self.outer_tolerance,
             self.eigenvalue_tolerance,
+            self.power_flux_tolerance,
         )
         if any(tolerance <= 0.0 for tolerance in tolerances):
             raise ValueError("All convergence tolerances must be positive.")
@@ -442,8 +448,11 @@ class SNResult:
 
     @property
     def converged(self) -> bool:
-        return bool(self.history and
-                    self.history[-1].keff_error <= self.settings.eigenvalue_tolerance)
+        return bool(
+            self.history
+            and self.history[-1].keff_error <= self.settings.eigenvalue_tolerance
+            and self.history[-1].flux_l2_error <= self.settings.power_flux_tolerance
+        )
 
     @property
     def power_iterations(self) -> int:
@@ -883,7 +892,8 @@ class SNSolver:
         """Run power iterations and return the converged eigenpair.
 
         A unit angular flux is used by default and therefore gives an initial
-        scalar flux equal to two.
+        scalar flux equal to two. Convergence requires both the relative
+        eigenvalue error and the relative L2 change of the scalar flux.
         """
 
         if initial_keff <= 0.0:
@@ -921,16 +931,19 @@ class SNSolver:
             # --- update k_eff and calculate convergence indicators
             new_keff = self._updated_keff(keff, old_scalar_flux, scalar_flux)
             keff_error = abs((keff - new_keff) / new_keff)
+            flux_linf_error = _relative_linf(scalar_flux, old_scalar_flux)
+            flux_l2_error = _relative_l2(scalar_flux, old_scalar_flux)
             history.append(PowerIterationHistory(
                 iteration=power_iteration, keff=new_keff,
                 keff_error=keff_error,
-                flux_linf_error=_relative_linf(scalar_flux, old_scalar_flux),
-                flux_l2_error=_relative_l2(scalar_flux, old_scalar_flux),
+                flux_linf_error=flux_linf_error,
+                flux_l2_error=flux_l2_error,
                 outer_iterations=outer_history))
             keff = new_keff
 
-            # --- stop when the eigenvalue error is below its tolerance
-            if keff_error <= self.settings.eigenvalue_tolerance:
+            # --- require convergence of both eigenvalue and scalar flux
+            if (keff_error <= self.settings.eigenvalue_tolerance
+                    and flux_l2_error <= self.settings.power_flux_tolerance):
                 return SNResult(problem=self.problem, settings=self.settings,
                                 keff=keff, scalar_flux=scalar_flux.copy(),
                                 angular_flux=angular_flux.copy(),
@@ -941,7 +954,8 @@ class SNSolver:
         raise RuntimeError(
             "Power iteration did not converge after "
             f"{self.settings.max_power_iterations} iterations; "
-            f"last eigenvalue error={history[-1].keff_error:.3e}.")
+            f"last eigenvalue error={history[-1].keff_error:.3e}, "
+            f"last scalar-flux L2 error={history[-1].flux_l2_error:.3e}.")
 
 
 __all__: Sequence[str] = (

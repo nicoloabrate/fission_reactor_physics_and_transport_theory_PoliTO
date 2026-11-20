@@ -107,6 +107,19 @@ def test_quadrature_integrates_constant_over_all_directions() -> None:
     assert np.all(solver.directions > 0.0)
 
 
+def test_power_iteration_default_tolerances() -> None:
+    settings = SNSettings()
+
+    assert settings.eigenvalue_tolerance == 1.0e-8
+    assert settings.power_flux_tolerance == 1.0e-7
+
+
+@pytest.mark.parametrize("invalid_tolerance", [0.0, -1.0e-7])
+def test_power_flux_tolerance_must_be_positive(invalid_tolerance: float) -> None:
+    with pytest.raises(ValueError, match="convergence tolerances"):
+        SNSettings(power_flux_tolerance=invalid_tolerance)
+
+
 def test_one_group_homogeneous_regression() -> None:
     settings = SNSettings(order=2,
                           inner_tolerance=1.0e-6,
@@ -119,8 +132,15 @@ def test_one_group_homogeneous_regression() -> None:
     ).solve_critical()
 
     assert result.converged
-    assert result.power_iterations == 62
-    assert np.isclose(result.keff, 1.2148298294, rtol=0.0, atol=5.0e-10)
+    assert result.history[-1].keff_error <= settings.eigenvalue_tolerance
+    assert result.history[-1].flux_l2_error <= settings.power_flux_tolerance
+    assert any(
+        step.keff_error <= settings.eigenvalue_tolerance
+        and step.flux_l2_error > settings.power_flux_tolerance
+        for step in result.history[:-1]
+    )
+    assert result.power_iterations == 392
+    assert np.isclose(result.keff, 1.2148446687, rtol=0.0, atol=5.0e-10)
     assert result.scalar_flux.shape == (1, 100)
 
 
@@ -139,8 +159,10 @@ def test_rayleigh_update_regression() -> None:
     ).solve_critical()
 
     assert result.converged
-    assert result.power_iterations == 34
-    assert np.isclose(result.keff, 1.2148411470, rtol=0.0, atol=5.0e-10)
+    assert result.history[-1].keff_error <= settings.eigenvalue_tolerance
+    assert result.history[-1].flux_l2_error <= settings.power_flux_tolerance
+    assert result.power_iterations == 392
+    assert np.isclose(result.keff, 1.2148454245, rtol=0.0, atol=5.0e-10)
 
 
 def test_multigroup_homogeneous_regression() -> None:
@@ -159,8 +181,10 @@ def test_multigroup_homogeneous_regression() -> None:
     ).solve_critical()
 
     assert result.converged
-    assert result.power_iterations == 36
-    assert np.isclose(result.keff, 1.2053260088, rtol=0.0, atol=5.0e-10)
+    assert result.history[-1].keff_error <= settings.eigenvalue_tolerance
+    assert result.history[-1].flux_l2_error <= settings.power_flux_tolerance
+    assert result.power_iterations == 83
+    assert np.isclose(result.keff, 1.2053945251, rtol=0.0, atol=5.0e-10)
     assert result.scalar_flux.shape == (4, 100)
     assert len(result.history[0].outer_iterations) > 1
 
@@ -230,14 +254,14 @@ def test_fixed_source_can_scale_fission_to_target_keff() -> None:
 
     assert result.converged
     assert result.reference_keff is not None
-    assert np.isclose(result.reference_keff, 1.2148298294,
+    assert np.isclose(result.reference_keff, 1.2148446687,
                       rtol=0.0, atol=5.0e-10)
     assert np.isclose(result.fission_scale,
                       0.95 / result.reference_keff,
                       rtol=0.0, atol=1.0e-15)
     assert result.outer_iterations == 1
     assert result.inner_iterations == 2758
-    assert np.isclose(np.max(result.scalar_flux), 580.0012237997,
+    assert np.isclose(np.max(result.scalar_flux), 579.8785591489,
                       rtol=0.0, atol=5.0e-8)
 
 
